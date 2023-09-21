@@ -11,4 +11,13 @@ computeFibb 1 = 1
 computeFibb 2 = 1
 computeFibb n = computeFibb(n - 1) + computeFibb(n - 2)
 
--- Fibb: 1 1 2 3 5 8 13 21
+sumOddFibb :: Int -> Int
+sumOddFibb 1 = 1
+sumOddFibb n | odd'(sumOddFibb n) = sumOddFibb(n - 1) + computeFibb n
+             | otherwise = sumOddFibb(n - 1)
+
+
+
+-- Fibb: 1 1 2 3 5 8 13
+
+
