@@ -1,0 +1,14 @@
+even' :: Int -> Bool
+even' n | mod n 2 == 0 = True
+        | otherwise = False
+
+odd' :: Int -> Bool
+odd' n  | mod n 2 == 1 = True
+        | otherwise = False
+
+computeFibb :: Int -> Int
+computeFibb 1 = 1
+computeFibb 2 = 1
+computeFibb n = computeFibb(n - 1) + computeFibb(n - 2)
+
+-- Fibb: 1 1 2 3 5 8 13 21
