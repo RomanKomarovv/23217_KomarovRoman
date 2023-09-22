@@ -1,10 +1,9 @@
+
 even' :: Int -> Bool
-even' n | mod n 2 == 0 = True
-        | otherwise = False
+even' n = if mod n 2 == 0 then True else False
 
 odd' :: Int -> Bool
-odd' n  | mod n 2 == 1 = True
-        | otherwise = False
+odd' n = if mod n 2 == 1 then True else False
 
 computeFibb :: Int -> Int
 computeFibb 1 = 1
@@ -13,11 +12,11 @@ computeFibb n = computeFibb(n - 1) + computeFibb(n - 2)
 
 sumOddFibb :: Int -> Int
 sumOddFibb 1 = 1
-sumOddFibb n | odd'(sumOddFibb n) = sumOddFibb(n - 1) + computeFibb n
-             | otherwise = sumOddFibb(n - 1)
+sumOddFibb n    | odd'(computeFibb n) = sumOddFibb(n - 1) + computeFibb n
+                | otherwise = sumOddFibb(n - 1)
 
 
+-- Fibb: 1 1 /2/ 3 5 /8/ 13
 
--- Fibb: 1 1 2 3 5 8 13
 
 
