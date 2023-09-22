@@ -8,7 +8,8 @@ odd' n = if mod n 2 == 1 then True else False
 computeFibb :: Int -> Int
 computeFibb 1 = 1
 computeFibb 2 = 1
-computeFibb n = computeFibb(n - 1) + computeFibb(n - 2)
+computeFibb n | n > 0 = computeFibb(n - 1) + computeFibb(n - 2)
+              | otherwise = error "ahah"
 
 sumOddFibb :: Int -> Int
 sumOddFibb 1 = 1
@@ -17,6 +18,5 @@ sumOddFibb n    | odd'(computeFibb n) = sumOddFibb(n - 1) + computeFibb n
 
 
 -- Fibb: 1 1 /2/ 3 5 /8/ 13
-
 
 
