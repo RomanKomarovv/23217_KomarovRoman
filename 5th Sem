@@ -1,6 +1,6 @@
 ----------- 1 -----------
 mapL' :: (a -> b) -> [a] -> [b]
-mapL' f = foldl (\acc x -> acc ++ [f x]) []
+mapL' f xs = reverse (foldl (\acc x -> f x : acc) [] xs)
 
 mapR' :: (a -> b) -> [a] -> [b]
 mapR' f = foldr (\x acc -> f x : acc) []
