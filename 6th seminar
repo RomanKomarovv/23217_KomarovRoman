@@ -1,0 +1,44 @@
+--- 1 ---
+reverse' :: [a] -> [a]
+reverse' xs = foldl (\acc x -> x:acc ) [] xs
+
+--- 2 ---
+evenOnly :: [a] -> [a]
+evenOnly xs = reverse (fst (foldl (\(a, b) x -> if even b then (x:a, b + 1) else (a, b + 1)) ([], 1) xs))
+
+--- 3 ---
+block :: Int -> (Int -> Bool) -> (Int -> Int) -> [Int] -> [Int]
+block x g f acc
+    | g x = block (f x) g f (x:acc)
+    | otherwise = acc 
+
+
+for :: (Int, a) -> (Int -> Int) -> (Int -> Bool) -> (Int -> a -> a) -> a
+for (a, b) incr conditer otec = foldr (\x acc -> otec x acc) b (block 0 conditer incr [])
+
+sum' :: Num a => [a] -> a
+sum' lst =
+    for (0, 0) (+ 1) (\i -> i < length lst) (
+    \i acc -> acc + lst!!i
+    )
+
+
+concatAll :: [String] -> String
+concatAll strs =
+    for (0, "") (+ 1) (\i -> i < length strs) (
+    \i acc -> acc ++ strs!!i
+    )
+
+--- 4 ---
+decartMult :: [a] -> [b] -> [(a, b)]
+decartMult xs ys = foldl(\acc1 x -> acc1 ++ foldl(\acc2 y -> (x, y):acc2) [] ys) [] xs
+
+--- 5 --- 
+sim :: Eq a => [a] -> BinaryRelation a -> Bool
+sim xs ys = foldl(\acc (x, y) -> if (y, x) `elem` ys then acc else False) True ys
+
+refl :: Eq a => [a] -> BinaryRelation a -> Bool
+refl xs ys = foldl(\acc x -> if elem (x, x) ys then acc else False) True xs
+
+
+
