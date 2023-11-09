@@ -1,0 +1,92 @@
+module HW9 (stackMachine) where
+import Utils
+
+newtype Stack = Stack [Int]
+        deriving (Show)
+
+--- 1 --- 
+emptyStack :: Stack
+emptyStack = Stack []
+
+push :: Stack -> Int -> Stack
+push (Stack stack) elem = Stack $ elem : stack
+
+pop :: Stack -> (Int, Stack)
+pop (Stack (x:xs)) =  (x, Stack xs)
+
+--- 2 ---
+data Instruction =
+        Push Int
+        | Add
+        | Sub
+        | Div
+        | Mul
+        | Pow
+        deriving (Show)
+
+
+executeInstruction :: Stack -> Instruction -> Stack
+executeInstruction stack (Push x) = push stack x
+executeInstruction (Stack (x : y : xs)) Add = push (Stack xs) (y + x)
+executeInstruction (Stack (x : y : xs)) Sub = push (Stack xs) (y - x)
+executeInstruction (Stack (x : y : xs)) Div = push (Stack xs) (div y x)
+executeInstruction (Stack (x : y : xs)) Mul = push (Stack xs) (y * x)
+executeInstruction (Stack (x : y : xs)) Pow = push (Stack xs) (y ^ x)
+executeInstruction stack _ = stack
+
+computeInstructions :: [Instruction] -> Int
+computeInstructions instr = headElem (foldl (executeInstruction) emptyStack instr)
+        where headElem (Stack (x:_)) = x
+
+--- 3 ---
+parseSign :: String -> Instruction
+parseSign s | s == "+" = Add
+parseSign s | s == "-" = Sub
+parseSign s | s == "/" = Div
+parseSign s | s == "*" = Mul
+parseSign s | s == "^" = Pow
+            | strIsNumber s = Push (strToInt s)
+
+parseString :: String -> [Instruction]
+parseString xs = map parseSign (split xs ' ')
+
+--- 4 ---
+class Parsable a where
+        parse :: a -> [Instruction]
+
+instance Parsable String where
+        parse = parseString
+
+instance Parsable [String] where
+        parse = concatMap parseString
+
+instance Parsable [Instruction] where
+        parse = id
+
+stackMachine :: (Parsable a) => a -> Int
+stackMachine xs = computeInstructions (parse xs)
+
+
+
+------ Utils.hs ------
+module Utils (split, strIsNumber, strToInt) where
+
+import Data.Char
+-- ghci> split "Hello world !!!" '\32'
+-- ["Hello", "world", "!!!"]
+split :: String -> Char -> [String]
+split [] delim = [""]
+split (x:xs) delim
+    | x == delim = "" : rest
+    | otherwise = (x : head rest) : tail rest
+    where
+    rest = split xs delim
+
+
+strIsNumber :: String -> Bool
+strIsNumber = all isDigit
+strToInt :: String -> Int
+strToInt s  | strIsNumber s = read s
+            | otherwise = error "This string is not a number"
+
+  
