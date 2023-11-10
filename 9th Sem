@@ -41,10 +41,10 @@ computeInstructions instr = headElem (foldl (executeInstruction) emptyStack inst
 --- 3 ---
 parseSign :: String -> Instruction
 parseSign s | s == "+" = Add
-parseSign s | s == "-" = Sub
-parseSign s | s == "/" = Div
-parseSign s | s == "*" = Mul
-parseSign s | s == "^" = Pow
+            | s == "-" = Sub
+            | s == "/" = Div
+            | s == "*" = Mul
+            | s == "^" = Pow
             | strIsNumber s = Push (strToInt s)
 
 parseString :: String -> [Instruction]
