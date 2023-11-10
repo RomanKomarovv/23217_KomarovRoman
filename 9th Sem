@@ -55,13 +55,13 @@ class Parsable a where
         parse :: a -> [Instruction]
 
 instance Parsable String where
-        parse = parseString
+        parse xs = parseString xs
 
 instance Parsable [String] where
-        parse = concatMap parseString
+        parse xs = concatMap parseString xs
 
 instance Parsable [Instruction] where
-        parse = id
+        parse xs = id xs
 
 stackMachine :: (Parsable a) => a -> Int
 stackMachine xs = computeInstructions (parse xs)
