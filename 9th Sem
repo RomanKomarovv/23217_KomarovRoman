@@ -12,6 +12,7 @@ push :: Stack -> Int -> Stack
 push (Stack stack) elem = Stack $ elem : stack
 
 pop :: Stack -> (Int, Stack)
+pop (Stack []) = error "BIG ERROR"
 pop (Stack (x:xs)) =  (x, Stack xs)
 
 --- 2 ---
@@ -35,6 +36,7 @@ executeInstruction (Stack (x : y : xs)) Pow = push (Stack xs) (y ^ x)
 executeInstruction stack _ = stack
 
 computeInstructions :: [Instruction] -> Int
+computeInstructions [] = error "BIG ERROR"
 computeInstructions instr = headElem (foldl (executeInstruction) emptyStack instr)
         where headElem (Stack (x:_)) = x
 
@@ -48,6 +50,7 @@ parseSign s | s == "+" = Add
             | strIsNumber s = Push (strToInt s)
 
 parseString :: String -> [Instruction]
+parseString "" = error "BIG ERROR"
 parseString xs = map parseSign (split xs ' ')
 
 --- 4 ---
@@ -64,7 +67,8 @@ instance Parsable [Instruction] where
         parse xs = id xs
 
 stackMachine :: (Parsable a) => a -> Int
-stackMachine xs = computeInstructions (parse xs)
+stackMachine xs | null (parse xs)  = error "BIG ERROR"
+                | otherwise        = computeInstructions (parse xs)
 
 
 
