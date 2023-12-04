@@ -74,6 +74,7 @@ treeSort (Node left right value count) = treeSort left ++ replicate count value 
 leftOrRight :: Maybe a -> Maybe a -> Maybe a
 leftOrRight Nothing x = x
 leftOrRight x Nothing = x
+leftOrRight x y = x
 
 findAny :: Ord a => (a -> Bool) -> BinTree a -> Maybe a
 findAny _ Nil = Nothing
