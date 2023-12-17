@@ -1,0 +1,66 @@
+type VarName = String
+data LambdaTerm = Lam VarName LambdaTerm    -- Abstraction
+                | App LambdaTerm LambdaTerm -- Application
+                | Var VarName               -- Variable
+
+id' = Lam "x" (Var "x")
+testTerm1 = Lam "n" (App (Var "f") (Var "n"))
+testTerm2 = App testTerm1 (Lam "a" (Var "a"))
+testTerm3 = App (Lam "x" (App (Var "x") (Var "x"))) (Var "n")
+xx = Lam "x" (App (Var "x") (Var "x"))
+testTerm4 = App xx xx
+t :: LambdaTerm
+t = Lam "x" $ App (Var "f") (App (Var "x") (Var "x"))
+yComb = Lam "f" (App t t)
+testTerm5 :: LambdaTerm
+testTerm5 = App yComb (Var "foo")
+
+
+
+------------  ЗАДАНИЕ № 1 ------------
+instance Show LambdaTerm where
+  show = showLambdaTerm
+
+showLambdaTerm :: LambdaTerm -> String
+showLambdaTerm (Var x) = x
+showLambdaTerm (Lam x t) = "(L " ++ x ++ " . " ++ showLambdaTerm t ++ ")"  -- Почему-то когда я пытаюсь выводить значок лямбды (λ), то вместо него выводится \955, так что вместо него буду использовать "L" 
+showLambdaTerm (App t1 t2) = "(" ++ showLambdaTerm t1 ++ " " ++ showLambdaTerm t2 ++ ")"
+
+
+
+------------  ЗАДАНИЕ № 2 ------------
+substitute :: LambdaTerm -> VarName -> LambdaTerm -> LambdaTerm
+substitute (Var x) varName replacement    -- Variable
+      | x == varName = replacement          
+      | otherwise = Var x
+substitute (Lam x t) varName replacement  -- Abstraction
+      | x == varName = Lam x t
+      | otherwise = Lam x (substitute t varName replacement)
+substitute (App t1 t2) varName replacement = App (substitute t1 varName replacement)(substitute t2 varName replacement)  -- Application --
+
+
+betaReduce :: LambdaTerm -> LambdaTerm
+betaReduce (App (Lam x t1) t2) = substitute t1 x t2
+betaReduce term = term
+
+
+
+------------  ЗАДАНИЕ № 3 ------------
+eval :: LambdaTerm -> LambdaTerm
+eval = eval0 0 where 
+  eval0 :: Int -> LambdaTerm -> LambdaTerm
+  eval0 c term
+    | canBeReduced term && c < maxCount = eval0 (c + 1)(reduceSubterms term)
+    | otherwise = term
+  maxCount = 1000
+
+
+canBeReduced :: LambdaTerm -> Bool
+canBeReduced (App (Lam _ _) _) = True
+canBeReduced _ = False
+
+
+reduceSubterms :: LambdaTerm -> LambdaTerm
+reduceSubterms (App (Lam x t) t2) = substitute t x (reduceSubterms t2)
+reduceSubterms (App t1 t2) = App (reduceSubterms t1)(reduceSubterms t2)
+reduceSubterms term = term
