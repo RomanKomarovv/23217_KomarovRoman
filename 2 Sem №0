@@ -1,0 +1,17 @@
+-------------- 1.1 --------------
+dup :: [a] -> [a]
+dup [] = []
+dup (x:xs) = x : x : dup xs
+
+-------------- 1.2 --------------
+dup2 :: [a] -> [a]
+dup2 = foldl (\acc x -> x:x:acc) []
+
+-------------- 2 --------------
+
+data PeanoNatural =
+    Zero | Succ PeanoNatural
+
+natToInt :: PeanoNatural -> Int
+natToInt Zero = 0
+natToInt (Succ x) = 1 + natToInt x
