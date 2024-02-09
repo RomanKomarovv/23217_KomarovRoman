@@ -5,7 +5,7 @@ dup (x:xs) = x : x : dup xs
 
 -------------- 1.2 --------------
 dup2 :: [a] -> [a]
-dup2 = foldl (\acc x -> x:x:acc) []
+dup2 = foldr (\x acc-> x:x:acc) []
 
 -------------- 2 --------------
 
