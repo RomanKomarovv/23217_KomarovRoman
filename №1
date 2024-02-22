@@ -1,0 +1,58 @@
+data Person = Person {
+  name :: String,
+  surname :: String,
+  father :: Maybe Person,
+  mother :: Maybe Person
+} deriving Show
+-----------  1  -----------
+mothersFather :: Person -> Maybe Person
+mothersFather p =
+  case mother p of
+    Nothing -> Nothing
+    Just m -> case father m of
+      Nothing -> Nothing
+      Just father -> Just father
+
+mothersFather' :: Person -> Maybe Person
+mothersFather' person = do
+  mother <- mother person
+  father <- father mother
+  return father
+
+-----------  2  -----------
+hasAllParents :: Person -> Maybe Person
+hasAllParents p = case father p of
+  Nothing -> Nothing
+  Just f -> case mother p of
+    Just m -> Just m
+    Nothing -> Nothing
+
+hasGrandparents :: Person -> Maybe Person
+hasGrandparents p = case father p of
+  Nothing -> Nothing
+  Just f -> case father f of
+    Nothing -> Nothing
+    Just ff -> case mother f of
+      Nothing -> Nothing
+      Just mf -> case mother p of
+        Nothing -> Nothing
+        Just m -> case father m of
+          Just fm -> case mother m of
+            Just mm -> Just mm
+
+
+hasGrandparents' :: Person -> Maybe Person
+hasGrandparents' p = do
+  f <- father p
+  ff <- father f
+  mf <- mother f
+  m <- mother p
+  fm <- father m
+  mm <- mother m
+  return mm
+
+
+-----------  3  -----------
+
+sumTwoInts :: IO ()
+sumTwoInts = readLn >>= (\x -> readLn >>= (\y -> print (x + y)))
