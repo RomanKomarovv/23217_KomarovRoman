@@ -1,0 +1,58 @@
+import Control.Monad.State
+
+----- 1 -----
+
+
+fact' :: State (Int, Int) Int
+fact' = do
+  (step, acc) <- get
+  if step == 0
+      then return acc
+      else do
+        put (step - 1, acc * step)
+        fact'
+
+fact :: Int -> Int
+fact n = evalState fact' (n, 1)
+
+----- 2 -----
+
+fibb' :: State (Int, Int, Int) Int
+fibb' = do
+  (step, cur, prev) <- get
+  if step == 1
+    then return cur
+    else do
+      put (step - 1, cur + prev, cur)
+      fibb'  
+
+
+fibb :: Int -> Int
+fibb n = evalState fibb' (n, 1, 0)
+
+-- 1 1 2 3 5 8 13 21 34 55
+
+-- 1 2 3 4 5 6 7  8  9  10
+
+----- 3 -----
+
+data BinTree a =
+  Nil |
+  Node (BinTree a) a (BinTree a)
+  deriving Show
+
+
+numberTree' :: BinTree () -> State Int (BinTree Int)
+numberTree' Nil = return Nil
+numberTree' (Node left () right) = do
+  leftNum <- numberTree' left
+  count <- get
+  put count
+  curNum <- get
+  put (count + 1)
+  rightNum <- numberTree' right
+  return (Node leftNum curNum rightNum)
+
+numberTree :: BinTree () -> BinTree Int
+numberTree tree = evalState (numberTree' tree) 0
+
